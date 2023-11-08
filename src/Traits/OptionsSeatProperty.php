@@ -14,22 +14,31 @@ trait OptionsSeatProperty
      * Перебираем значение массива и указываем нужные объемы.
      * Если не указывать значение из конфига в 1 кг.
      *
-     * @param  string|array  $OptionsSeat  Указание объемного веса массивом или индексом из массива в конфиге
+     * @param string|array $OptionsSeat Указание объемного веса массивом или индексом из массива в конфиге
      * @return $this
      */
     public function setOptionsSeat($OptionsSeat): self
     {
         $data = config('novaposhta.options_seat');
+
         if (is_array($OptionsSeat) === false) {
             $OptionsSeat = explode(',', /** @scrutinizer ignore-type */ $OptionsSeat);
         }
+
         foreach ($OptionsSeat as $value) {
             try {
-                $this->OptionsSeat[] = $data[$value];
-            } catch (Exception $e) {
-                $this->OptionsSeat[] = $data[1];
+                $this->setCustomOptionsSeat($data[$value]);
+            } catch (Exception) {
+                $this->setCustomOptionsSeat($data[1]);
             }
         }
+
+        return $this;
+    }
+
+    public function setCustomOptionsSeat(array $values): self
+    {
+        $this->OptionsSeat[] = $values;
 
         return $this;
     }
@@ -39,7 +48,7 @@ trait OptionsSeatProperty
      */
     public function getOptionsSeat(): void
     {
-        if (! $this->OptionsSeat) {
+        if (!$this->OptionsSeat) {
             $defaultSeat = [
                 'volumetricVolume' => '1',
                 'volumetricWidth' => '24',
@@ -57,7 +66,7 @@ trait OptionsSeatProperty
      * Устанавливаем вес груза. По умолчанию значение из конфига.
      * Не обязательно, если выставляем OptionsSeat, но это не точно.
      *
-     * @param  string  $weight  Вес груза
+     * @param string $weight Вес груза
      * @return $this
      */
     public function setWeight(string $weight): self
