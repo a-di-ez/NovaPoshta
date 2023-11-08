@@ -121,6 +121,15 @@ $np->setAdditionalInformation('Добавление информации');
 $np->setOptionsSeat([1, 5, 10, 11]);
 $np->setOptionsSeat(5);
 
+//указание своих размеров посылки, объема и веса
+$np->setOptionsSeat([
+    'volumetricVolume' => '1',
+    'volumetricWidth' => '24',
+    'volumetricLength' => '17',
+    'volumetricHeight' => '10',
+    'weight' => '1', // если указан вес здесь, то его не нужно указывать через ->setWeight()
+]);
+
 $createTTN = $np->save('Заявка №500');
 
 dd($createTTN);

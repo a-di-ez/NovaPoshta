@@ -2,7 +2,9 @@
 
 namespace Daaner\NovaPoshta\Traits;
 
+use Daaner\NovaPoshta\Exceptions\MissedRequiredParam;
 use Exception;
+use Illuminate\Support\Arr;
 
 trait OptionsSeatProperty
 {
@@ -16,6 +18,7 @@ trait OptionsSeatProperty
      *
      * @param string|array $OptionsSeat Указание объемного веса массивом или индексом из массива в конфиге
      * @return $this
+     * @throws MissedRequiredParam
      */
     public function setOptionsSeat($OptionsSeat): self
     {
@@ -36,9 +39,24 @@ trait OptionsSeatProperty
         return $this;
     }
 
-    public function setCustomOptionsSeat(array $values): self
+    /**
+     * @throws MissedRequiredParam
+     */
+    public function setCustomOptionsSeat(array $data): self
     {
-        $this->OptionsSeat[] = $values;
+        if (!Arr::has($data, [
+            'volumetricVolume',
+            'volumetricWidth',
+            'volumetricLength',
+            'volumetricHeight',
+            'weight',
+        ])) {
+            throw new MissedRequiredParam();
+        }
+
+        $this->setWeight($data['weight']);
+
+        $this->OptionsSeat[] = $data;
 
         return $this;
     }
