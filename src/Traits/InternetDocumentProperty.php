@@ -162,13 +162,10 @@ trait InternetDocumentProperty
 
     /**
      * Устанавливаем стоимость груза. По умолчанию значение конфига.
-     *
-     * @param  string  $cost  Оценочная стоимость
-     * @return $this
      */
-    public function setCost(string $cost): self
+    public function setCost(string|float|int $cost): self
     {
-        $this->Cost = $cost;
+        $this->Cost = (string)$cost;
 
         return $this;
     }
