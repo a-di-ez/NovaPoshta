@@ -2,7 +2,9 @@
 
 namespace Daaner\NovaPoshta\Traits;
 
+use Daaner\NovaPoshta\Exceptions\MissedRequiredParam;
 use Exception;
+use Illuminate\Support\Arr;
 
 trait OptionsSeatProperty
 {
@@ -27,11 +29,33 @@ trait OptionsSeatProperty
 
         foreach ($OptionsSeat as $value) {
             try {
-                $this->OptionsSeat[] = $data[$value];
-            } catch (Exception $e) {
-                $this->OptionsSeat[] = $data[1];
+                $this->setCustomOptionsSeat($data[$value]);
+            } catch (Exception) {
+                $this->setCustomOptionsSeat($data[1]);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @throws MissedRequiredParam
+     */
+    public function setCustomOptionsSeat(array $data): self
+    {
+        if (!Arr::has($data, [
+            'volumetricVolume',
+            'volumetricWidth',
+            'volumetricLength',
+            'volumetricHeight',
+            'weight',
+        ])) {
+            throw new MissedRequiredParam();
+        }
+
+        $this->setWeight($data['weight']);
+
+        $this->OptionsSeat[] = $data;
 
         return $this;
     }
